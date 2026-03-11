@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Dashboard.css";
 
-const API = "http://localhost:8080/api";
+import API from "../apiConfig";
 
 function PatientDashboard() {
   const navigate = useNavigate();

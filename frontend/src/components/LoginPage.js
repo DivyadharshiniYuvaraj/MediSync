@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./LoginPage.css";
+import API from "../apiConfig";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -30,7 +31,7 @@ function LoginPage() {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/api/auth/login", {
+      const response = await fetch(`${API}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: enteredEmail, password: enteredPassword })
