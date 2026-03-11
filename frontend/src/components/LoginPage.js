@@ -68,11 +68,11 @@ function LoginPage() {
       <div className="mesh-gradient"></div>
       <div className="auth-container">
         <div className="auth-brand" onClick={() => navigate("/")}>
-          Medi<span>cose</span>
+          Medi<span>Sync</span>
         </div>
         <div className="auth-card">
           <h2>Welcome Back</h2>
-          <p className="auth-subtitle">Sign in to continue to Medicose</p>
+          <p className="auth-subtitle">Sign in to continue to MediSync</p>
 
           <div className="auth-form">
             <div className="input-group">

@@ -138,7 +138,7 @@ function PatientDashboard() {
       <div className="mesh-gradient"></div>
       {/* Sidebar */}
       <aside className="sidebar">
-        <div className="sidebar-logo">Medi<span>cose</span><br /><small style={{ fontSize: '0.8rem', opacity: 0.8 }}>Patient Portal</small></div>
+        <div className="sidebar-logo">Medi<span>Sync</span><br /><small style={{ fontSize: '0.8rem', opacity: 0.8 }}>Patient Portal</small></div>
         <nav className="sidebar-nav">
           {[
             { key: "appointments", icon: "📋", label: "My Appointments" },

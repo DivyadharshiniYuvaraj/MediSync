@@ -70,11 +70,11 @@ function SignupPage() {
       <div className="mesh-gradient"></div>
       <div className="auth-container" style={{ maxWidth: "600px" }}>
         <div className="auth-brand" onClick={() => navigate("/")}>
-          Medi<span>cose</span>
+          Medi<span>Sync</span>
         </div>
         <div className="auth-card">
           <h2>Create Account</h2>
-          <p className="auth-subtitle">Join Medicose for better health management</p>
+          <p className="auth-subtitle">Join MediSync for better health management</p>
 
           <div className="auth-form-grid">
             <div className="input-group">
