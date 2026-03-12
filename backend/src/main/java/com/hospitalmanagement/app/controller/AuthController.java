@@ -1,4 +1,4 @@
-package com.hospitalmanagement.app.config;
+package com.hospitalmanagement.app.controller;
 
 import com.hospitalmanagement.app.dto.LoginRequestDTO;
 import com.hospitalmanagement.app.dto.RegisterRequestDTO;
@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class AuthController {
 
     private final AuthService authService;

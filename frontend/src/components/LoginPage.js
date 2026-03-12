@@ -102,7 +102,7 @@ function LoginPage() {
           <div className="auth-footer">
             Don't have an account?{" "}
             <span className="auth-link" onClick={() => navigate("/signup")}>
-              Create one now
+              Create now
             </span>
           </div>
         </div>
@@ -111,4 +111,4 @@ function LoginPage() {
   );
 }
 
-export default LoginPage;
+export default LoginPage;
