@@ -15,14 +15,14 @@ services:
         sync: false
 
   # Frontend Service (Static Site)
-  - type: web
+  - type: static
     name: medisync-frontend
-    env: static
+    env: node
     repo: https://github.com/DivyadharshiniYuvaraj/MediSync
     rootDir: frontend
     plan: free
     buildCommand: npm install && npm run build
-    staticPublishDir: build
+    publishDir: build
     envVars:
       - key: REACT_APP_API_URL
         fromService:
