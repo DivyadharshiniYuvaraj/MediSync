@@ -40,7 +40,7 @@ public class AuthServiceImpl implements AuthService {
         if (request.getDepartmentId() != null) {
             user.setDepartment(
                     departmentRepository.findById(request.getDepartmentId())
-                            .orElseThrow(() -> new RuntimeException("Department not found"))
+                            .orElseThrow(() -> new java.lang.RuntimeException("Department not found"))
             );
         } else if (request.getDepartmentName() != null && !request.getDepartmentName().isEmpty()) {
             user.setDepartment(
@@ -61,10 +61,10 @@ public class AuthServiceImpl implements AuthService {
     public UserResponseDTO login(LoginRequestDTO request) {
 
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("Invalid Email"));
+                .orElseThrow(() -> new java.lang.RuntimeException("Invalid Email"));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid Password");
+            throw new java.lang.RuntimeException("Invalid Password");
         }
 
         return new UserResponseDTO(
