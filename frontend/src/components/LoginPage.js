@@ -31,14 +31,13 @@ function LoginPage() {
     }
 
     try {
-      const response = await fetch(`${API}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: enteredEmail, password: enteredPassword })
+      const response = await API.post("/auth/login", { 
+        email: enteredEmail, 
+        password: enteredPassword 
       });
 
-      if (response.ok) {
-        const user = await response.json();
+      if (response.status === 200) {
+        const user = response.data;
         localStorage.setItem("role", user.role);
         localStorage.setItem("email", user.email);
         localStorage.setItem("userId", user.id);
@@ -47,20 +46,18 @@ function LoginPage() {
         if (user.role === "ADMIN") navigate("/admin");
         else if (user.role === "DOCTOR") navigate("/doctor");
         else if (user.role === "PATIENT") navigate("/patient");
-      } else {
-        let errorMsg = "Invalid credentials";
-        try {
-          const errData = await response.json();
-          errorMsg = errData.message || errorMsg;
-        } catch (e) {
-          const raw = await response.text();
-          if (raw && raw.length < 100) errorMsg = raw;
-        }
-        alert(errorMsg);
       }
     } catch (error) {
       console.error("Login Error:", error);
-      alert("Network error. Is the backend running?");
+      if (error.response) {
+        let errorMsg = "Invalid credentials";
+        if (error.response.data) {
+           errorMsg = error.response.data.message || error.response.data || errorMsg;
+        }
+        alert(errorMsg);
+      } else {
+        alert("Network error. Is the backend running?");
+      }
     }
   };
 

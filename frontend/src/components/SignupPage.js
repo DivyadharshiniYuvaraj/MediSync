@@ -37,30 +37,27 @@ function SignupPage() {
     }
 
     try {
-      const response = await fetch(`${API}/auth/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-          dob: formData.dob,
-          gender: formData.gender,
-          mobile: formData.mobile,
-          role: "PATIENT"
-        })
+      const response = await API.post("/auth/register", {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        dob: formData.dob,
+        gender: formData.gender,
+        mobile: formData.mobile,
+        role: "PATIENT"
       });
 
-      if (response.ok) {
+      if (response.status === 200 || response.status === 201) {
         alert("Signup Successful. Please Login.");
         navigate("/login");
-      } else {
-        const errorMsg = await response.text();
-        alert(errorMsg || "Signup failed");
       }
     } catch (error) {
       console.error("Signup Error:", error);
-      alert("Network error. Is the backend running?");
+      if (error.response) {
+        alert(error.response.data || "Signup failed");
+      } else {
+        alert("Network error. Is the backend running?");
+      }
     }
   };
 

@@ -28,35 +28,34 @@ function PatientDashboard() {
     const role = localStorage.getItem("role");
     const email = localStorage.getItem("email");
     try {
-      const res = await fetch(`${API}/appointments`, {
-        credentials: "include",
+      const res = await API.get("/appointments", {
         headers: {
           "X-User-Email": email,
           "X-User-Role": role
         }
       });
-      if (res.ok) setAppointments(await res.json());
+      setAppointments(res.data);
     } catch (e) { console.error(e); }
   }
 
   async function fetchSpecializations() {
     try {
-      const res = await fetch(`${API}/public/specializations`, { credentials: "include" });
-      if (res.ok) setSpecializations(await res.json());
+      const res = await API.get("/public/specializations");
+      setSpecializations(res.data);
     } catch (e) { console.error(e); }
   }
 
   async function fetchDoctorsBySpecialization(spec) {
     try {
-      const res = await fetch(`${API}/public/doctors?specialization=${encodeURIComponent(spec)}`, { credentials: "include" });
-      if (res.ok) setDoctors(await res.json());
+      const res = await API.get(`/public/doctors?specialization=${encodeURIComponent(spec)}`);
+      setDoctors(res.data);
     } catch (e) { console.error(e); }
   }
 
   async function fetchSlots(doctorId) {
     try {
-      const res = await fetch(`${API}/public/doctors/${doctorId}/slots`, { credentials: "include" });
-      if (res.ok) setSlots(await res.json());
+      const res = await API.get(`/public/doctors/${doctorId}/slots`);
+      setSlots(res.data);
     } catch (e) { console.error(e); }
   }
 
@@ -93,32 +92,28 @@ function PatientDashboard() {
     try {
       const email = localStorage.getItem("email");
       const role = localStorage.getItem("role");
-      const res = await fetch(`${API}/appointments`, {
-        method: "POST",
+      const res = await API.post("/appointments", {
+        doctorId: Number(bookForm.doctorId),
+        appointmentDate: bookForm.appointmentDate,
+        startTime: bookForm.startTime,
+        endTime: bookForm.endTime
+      }, {
         headers: {
-          "Content-Type": "application/json",
           "X-User-Email": email,
           "X-User-Role": role
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          doctorId: Number(bookForm.doctorId),
-          appointmentDate: bookForm.appointmentDate,
-          startTime: bookForm.startTime,
-          endTime: bookForm.endTime
-        })
+        }
       });
-      if (res.ok) {
+      if (res.status === 200 || res.status === 201) {
         showAlert("Appointment booked successfully!", "success");
         setShowModal(false);
         setBookForm({ specialization: "", doctorId: "", slotId: "", appointmentDate: "", startTime: "", endTime: "" });
         setDoctors([]); setSlots([]);
         fetchAppointments();
-      } else {
-        const err = await res.json();
-        showAlert(err.message || "Booking failed.", "error");
       }
-    } catch (e) { showAlert("Network error.", "error"); }
+    } catch (e) {
+      const err = e.response?.data?.message || e.response?.data || "Booking failed.";
+      showAlert(err, "error");
+    }
     finally { setLoading(false); }
   }
 

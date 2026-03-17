@@ -21,25 +21,24 @@ function DoctorDashboard() {
     const role = localStorage.getItem("role");
     const email = localStorage.getItem("email");
     try {
-      const res = await fetch(`${API}/appointments`, {
-        credentials: "include",
+      const res = await API.get("/appointments", {
         headers: {
           "X-User-Email": email,
           "X-User-Role": role
         }
       });
-      if (res.ok) setAppointments(await res.json());
+      setAppointments(res.data);
     } catch (e) { console.error(e); }
   }
 
   async function handleConfirm(id) {
     try {
-      const res = await fetch(`${API}/doctor/appointments/${id}/confirm`, {
-        method: "PUT", credentials: "include"
-      });
-      if (res.ok) { showAlert("Appointment confirmed!", "success"); fetchAppointments(); }
-      else showAlert("Failed to confirm.", "error");
-    } catch (e) { showAlert("Network error.", "error"); }
+      const res = await API.put(`/doctor/appointments/${id}/confirm`);
+      if (res.status === 200) { 
+        showAlert("Appointment confirmed!", "success"); 
+        fetchAppointments(); 
+      }
+    } catch (e) { showAlert("Failed to confirm or Network error.", "error"); }
   }
 
   async function handleAddSlot(e) {
@@ -47,17 +46,12 @@ function DoctorDashboard() {
     setLoading(true);
     const doctorId = localStorage.getItem("userId");
     try {
-      const res = await fetch(`${API}/doctor/${doctorId}/slots`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(slotForm)
-      });
-      if (res.ok) {
+      const res = await API.post(`/doctor/${doctorId}/slots`, slotForm);
+      if (res.status === 200 || res.status === 201) {
         showAlert("Slot added successfully!", "success");
         setSlotForm({ date: "", startTime: "", endTime: "" });
-      } else showAlert("Failed to add slot.", "error");
-    } catch (e) { showAlert("Network error.", "error"); }
+      }
+    } catch (e) { showAlert("Failed to add slot or Network error.", "error"); }
     finally { setLoading(false); }
   }
 

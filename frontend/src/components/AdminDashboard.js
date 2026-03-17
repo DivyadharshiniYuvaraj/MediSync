@@ -29,61 +29,53 @@ function AdminDashboard() {
     const role = localStorage.getItem("role");
     const email = localStorage.getItem("email");
     try {
-      const res = await fetch(`${API}/appointments`, {
-        credentials: "include",
+      const res = await API.get("/appointments", {
         headers: {
           "X-User-Email": email,
           "X-User-Role": role
         }
       });
-      if (res.ok) setAppointments(await res.json());
+      setAppointments(res.data);
     } catch (e) { console.error(e); }
   }
 
   async function fetchDoctors() {
     try {
-      const res = await fetch(`${API}/public/doctors`, { credentials: "include" });
-      if (res.ok) setDoctors(await res.json());
+      const res = await API.get("/public/doctors");
+      setDoctors(res.data);
     } catch (e) { console.error(e); }
   }
 
   async function handleCancelAppointment(id) {
     if (!window.confirm("Cancel this appointment?")) return;
     try {
-      const res = await fetch(`${API}/appointments/${id}/cancel`, {
-        method: "PUT", credentials: "include"
-      });
-      if (res.ok) {
+      const res = await API.put(`/appointments/${id}/cancel`);
+      if (res.status === 200) {
         showAlert("Appointment cancelled.", "success");
         fetchAppointments();
-      } else showAlert("Failed to cancel.", "error");
-    } catch (e) { showAlert("Network error.", "error"); }
+      }
+    } catch (e) { showAlert("Failed to cancel or Network error.", "error"); }
   }
 
   async function handleAddDoctor(e) {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch(`${API}/auth/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          ...doctorForm,
-          departmentName: doctorForm.department, // Map 'department' to 'departmentName'
-          role: "DOCTOR"
-        })
+      const res = await API.post("/auth/register", {
+        ...doctorForm,
+        departmentName: doctorForm.department, // Map 'department' to 'departmentName'
+        role: "DOCTOR"
       });
-      if (res.ok) {
+      if (res.status === 200 || res.status === 201) {
         showAlert("Doctor added successfully!", "success");
         setShowAddDoctor(false);
         setDoctorForm({ name: "", email: "", password: "", specialization: "", department: "" });
         fetchDoctors();
-      } else {
-        const err = await res.json();
-        showAlert(err.message || "Failed to add doctor.", "error");
       }
-    } catch (e) { showAlert("Network error.", "error"); }
+    } catch (e) {
+      const err = e.response?.data?.message || e.response?.data || "Failed to add doctor.";
+      showAlert(err, "error");
+    }
     finally { setLoading(false); }
   }
 
